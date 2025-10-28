@@ -4,11 +4,20 @@ import org.springframework.stereotype.Component;
 
 import app.dto.FuncionarioRequestDTO;
 import app.dto.FuncionarioResponseDTO;
+import app.dto.DepartamentoResponseDTO;
 import app.entity.Funcionario;
+import app.entity.Departamento;
 
 @Component
 public class FuncionarioMapper {
 
+    private final DepartamentoMapper departamentoMapper;
+
+    public FuncionarioMapper(DepartamentoMapper departamentoMapper) {
+        this.departamentoMapper = departamentoMapper;
+    }
+
+    // DTO -> Entidade
     public Funcionario toEntity(FuncionarioRequestDTO dto) {
         if (dto == null) return null;
 
@@ -21,11 +30,19 @@ public class FuncionarioMapper {
         if (dto.ativo() != null) {
             f.setAtivo(dto.ativo());
         }
+        // O departamento será setado no Service (após buscar por ID)
         return f;
     }
 
+    // Entidade -> DTO
     public FuncionarioResponseDTO toResponseDTO(Funcionario f) {
         if (f == null) return null;
+
+        DepartamentoResponseDTO departamentoDTO = null;
+        Departamento dep = f.getDepartamento();
+        if (dep != null) {
+            departamentoDTO = departamentoMapper.toResponseDTO(dep);
+        }
 
         return new FuncionarioResponseDTO(
                 f.getId(),
@@ -34,11 +51,12 @@ public class FuncionarioMapper {
                 f.getCargo(),
                 f.getSalario(),
                 f.getDataAdmissao(),
-                f.getAtivo()
+                f.getAtivo(),
+                departamentoDTO
         );
     }
 
- 
+    // Atualização de entidade existente
     public void updateEntity(Funcionario destino, FuncionarioRequestDTO dto) {
         if (destino == null || dto == null) return;
 
@@ -48,5 +66,6 @@ public class FuncionarioMapper {
         if (dto.salario() != null)      destino.setSalario(dto.salario());
         if (dto.dataAdmissao() != null) destino.setDataAdmissao(dto.dataAdmissao());
         if (dto.ativo() != null)        destino.setAtivo(dto.ativo());
+        // O departamento também será atualizado no Service, não aqui
     }
 }

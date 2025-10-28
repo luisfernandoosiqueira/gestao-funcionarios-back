@@ -6,22 +6,31 @@ import java.time.LocalDate;
 
 public record FuncionarioRequestDTO(
 
-    @NotBlank @Size(min = 3, max = 120)
+    @NotBlank
+    @Size(min = 3, max = 120)
     String nome,
 
-    @NotBlank @Email @Size(max = 120)
+    @NotBlank
+    @Email
+    @Size(max = 120)
     String email,
 
-    @NotBlank @Size(min = 2, max = 60)
+    @NotBlank
+    @Size(min = 2, max = 60)
     String cargo,
 
-    @NotNull @Positive
+    @NotNull
+    @Positive
     Double salario,
 
-    @NotNull @PastOrPresent
+    @NotNull
+    @PastOrPresent
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     LocalDate dataAdmissao,
 
     // opcional
-    Boolean ativo
+    Boolean ativo,
+
+    @NotNull(message = "O departamento é obrigatório")
+    Long departamentoId
 ) {}

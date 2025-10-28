@@ -1,8 +1,17 @@
 package app.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TB_FUNCIONARIO")
@@ -30,18 +39,24 @@ public class Funcionario {
     @Column(nullable = false)
     private Boolean ativo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departamento_id", nullable = false)
+    private Departamento departamento;
+
     public Funcionario() {
         this.ativo = true;
         this.salario = 0.0;
     }
 
-    public Funcionario(String nome, String email, String cargo, Double salario, LocalDate dataAdmissao, Boolean ativo) {
+    public Funcionario(String nome, String email, String cargo, Double salario,
+                       LocalDate dataAdmissao, Boolean ativo, Departamento departamento) {
         this.nome = nome;
         this.email = email;
         this.cargo = cargo;
         this.salario = (salario != null ? salario : 0.0);
         this.dataAdmissao = dataAdmissao;
         this.ativo = (ativo != null ? ativo : true);
+        this.departamento = departamento;
     }
 
     public Long getId() {
@@ -94,6 +109,14 @@ public class Funcionario {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
     }
 
     @Override

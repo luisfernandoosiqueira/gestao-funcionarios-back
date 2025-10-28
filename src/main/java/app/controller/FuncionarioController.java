@@ -19,30 +19,37 @@ public class FuncionarioController {
     @Autowired
     private FuncionarioService funcionarioService;
 
-    // lista (com filtros opcionais: cargo, ativo)
+    // Lista todos (com filtros opcionais: cargo, ativo)
     @GetMapping
-    public ResponseEntity<List<FuncionarioResponseDTO>> listar(
+    public ResponseEntity<List<FuncionarioResponseDTO>> listarTodos(
             @RequestParam(required = false) String cargo,
             @RequestParam(required = false) Boolean ativo) {
         List<FuncionarioResponseDTO> lista = funcionarioService.findAll(cargo, ativo);
         return ResponseEntity.ok(lista);
     }
 
-    // busca por id
+    // Lista por departamento (opcional)
+    @GetMapping("/departamento/{id}")
+    public ResponseEntity<List<FuncionarioResponseDTO>> listarPorDepartamento(@PathVariable Long id) {
+        List<FuncionarioResponseDTO> lista = funcionarioService.findByDepartamento(id);
+        return ResponseEntity.ok(lista);
+    }
+
+    // Busca por id
     @GetMapping("/{id}")
     public ResponseEntity<FuncionarioResponseDTO> buscarPorId(@PathVariable Long id) {
         FuncionarioResponseDTO dto = funcionarioService.findById(id);
         return ResponseEntity.ok(dto);
     }
 
-    // cria
+    // Cria
     @PostMapping
     public ResponseEntity<FuncionarioResponseDTO> salvar(@RequestBody @Valid FuncionarioRequestDTO dto) {
         FuncionarioResponseDTO salvo = funcionarioService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
-    // atualiza (id)
+    // Atualiza
     @PutMapping("/{id}")
     public ResponseEntity<FuncionarioResponseDTO> atualizar(
             @PathVariable Long id,
@@ -51,14 +58,14 @@ public class FuncionarioController {
         return ResponseEntity.ok(atualizado);
     }
 
-    // inativa (patch)
+    // Inativa
     @PatchMapping("/{id}/inativar")
     public ResponseEntity<FuncionarioResponseDTO> inativar(@PathVariable Long id) {
         FuncionarioResponseDTO dto = funcionarioService.inativar(id);
         return ResponseEntity.ok(dto);
     }
 
-    // remove (id)
+    // Remove
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         funcionarioService.delete(id);

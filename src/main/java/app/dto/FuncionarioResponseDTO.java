@@ -9,5 +9,6 @@ public record FuncionarioResponseDTO(
     String cargo,
     Double salario,
     LocalDate dataAdmissao,
-    Boolean ativo
+    Boolean ativo,
+    DepartamentoResponseDTO departamento
 ) {}
